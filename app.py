@@ -36,15 +36,15 @@ def process(msg):
     return str(val)
 
 
-def scrap(user_name):
-    url = "https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&q=" + str(user_name)
-    source_code = requst.get(url)
-    plain_text = source_code.text
-    soup = BeautifulSoup(plain_text)
-    ans  = []
-    for link in soup.find_all("a"):
-        ans.append(link.string)
-    return ans[0]
+# def scrap(user_name):
+#     url = "https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&q=" + str(user_name)
+#     source_code = requst.get(url)
+#     plain_text = source_code.text
+#     soup = BeautifulSoup(plain_text)
+#     ans  = []
+#     for link in soup.find_all("a"):
+#         ans.append(link.string)
+#     return ans[0]
 
 
 # Importing standard route and two requst types: GET and POST.
@@ -386,48 +386,52 @@ def webhook():
 
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
-                    message_text = messaging_event["message"]["text"]  # the message's text
-                    #message_text = "hi"
-                    ##send_message(sender_id, "roger that!")
-                    
-                    if(message_text == "hi" or message_text == "hello"):
-                        reply_quick(sender_id, message_text)
-                    
+                    if("text" in messaging_event["message"]):
+                      message_text = messaging_event["message"]["text"]  # the message's text
+                      #message_text = "hi"
+                      ##send_message(sender_id, "roger that!")
+                      
+                      if(message_text == "hi" or message_text == "hello"):
+                          reply_quick(sender_id, message_text)
+                      
 
-                    elif(message_text == "Book"):
-                        
-                        reply(sender_id, "Enter the book name like book: shawshank redemption")
-                        
-                    elif(message_text == "Author"):
-                
-                        reply(sender_id, "Enter the author name like author: stephen king")
-                        
-                    elif(message_text == "Article"):
-                        
-                        reply(sender_id, "Enter the article name like article: harry potter")
-    
+                      elif(message_text == "Book"):
+                          
+                          reply(sender_id, "Enter the book name like book: shawshank redemption")
+                          
+                      elif(message_text == "Author"):
+                  
+                          reply(sender_id, "Enter the author name like author: stephen king")
+                          
+                      elif(message_text == "Article"):
+                          
+                          reply(sender_id, "Enter the article name like article: harry potter")
+      
 
-                    elif(message_text == "Quit"):
-                        reply(sender_id, "see you later with another research")
-                        
+                      elif(message_text == "Quit"):
+                          reply(sender_id, "see you later with another research")
+                          
+                      else:
+                          #reply(sender_id, "https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&q=" + message_text.replace(" ", "%20"))
+                          # reply(sender_id, "https://academic.microsoft.com/search?q=" + message_text.replace(" ", "%20"))
+                          # reply(sender_id, "https://www.google.com/search?tbm=bks&q="+message_text.replace(" ", "%20"))
+                          # reply(sender_id, "https://core.ac.uk/search?q=" + message_text.replace(" ", "%20"))
+                          # reply(sender_id, "https://www.semanticscholar.org/search?q=" + message_text.replace(" ", "%20") +"&sort=relevance")
+                          reply(sender_id, "Your results are following, if you want more after this say 'hi' or 'hello' again")
+                          if("article" in message_text.lower()):
+                              message_text = message_text.replace("article:", "")
+                              generic_reply(sender_id, message_text)
+                              #reply_quick(sender_id, message_text)
+                          elif("author" in message_text.lower()):
+                              message_text = message_text.replace("author:", "")
+                              generic_reply_author(sender_id, message_text)
+                              #reply_quick(sender_id, message_text)
+                          elif("book" in message_text.lower()):
+                              message_text = message_text.replace("book:", "")
+                              generic_reply(sender_id, message_text)
+                              #reply_quick(sender_id, message_text)
                     else:
-                        # reply(sender_id, "https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&q=" + message_text.replace(" ", "%20"))
-                        # reply(sender_id, "https://academic.microsoft.com/search?q=" + message_text)
-                        # reply(sender_id, "https://www.google.com/search?tbm=bks&q="+message_text)
-                        # reply(sender_id, "https://core.ac.uk/search?q=" + message_text)
-                        # reply(sender_id, "https://www.semanticscholar.org/search?q=" + message_text +"&sort=relevance")
-                        if("article" in message_text.lower()):
-                            message_text = message_text.replace("article:", "")
-                            generic_reply(sender_id, message_text)
-                            reply_quick(sender_id, message_text)
-                        elif("author" in message_text.lower()):
-                            message_text = message_text.replace("author:", "")
-                            generic_reply_author(sender_id, message_text)
-                            reply_quick(sender_id, message_text)
-                        elif("book" in message_text.lower()):
-                            message_text = message_text.replace("book:", "")
-                            generic_reply(sender_id, message_text)
-                            reply_quick(sender_id, message_text)
+                        reply_quick(sender_id, "hi")
                     
     return "ok"
 
